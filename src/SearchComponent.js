@@ -11,9 +11,15 @@ export default class SearchComponent extends React.Component {
   }
 
   handleChange = event => {
+
     const val = event.target.value;
     this.setState({ searchInput: val }, () => this.globalSearch());
-    this.props.handleSetSearchInput(val);
+    if(event.charCode === 13){
+        this.props.handleSetSearchInput(val,'enter');
+    }else{
+        this.props.handleSetSearchInput(val);
+    }
+   
   };
 
   globalSearch = () => {
@@ -28,7 +34,7 @@ export default class SearchComponent extends React.Component {
         return (
           value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.city.toLowerCase().includes(searchInput.toLowerCase()) ||
-        
+       
           value.genre
             .toString()
             .toLowerCase()
@@ -44,7 +50,7 @@ export default class SearchComponent extends React.Component {
   setStateColumnSearch = e => {
     this.props.handleSetSearchInput(e.target.value);
     this.setState({ stateColumnSearch: e.target.value }, () => this.globalSearch());
-  }; 
+  };
 
  
   render() {
@@ -56,7 +62,7 @@ export default class SearchComponent extends React.Component {
         <br />
 
         <input type="text" placeholder='Search by name or city or genre' style={{ padding: '10px', margin: '10px',width:'300px' }}
-         onChange={e => this.handleChange(e)}></input> 
+         onChange={e => this.handleChange(e)} onKeyPress={e=>this.handleChange(e)}></input>
 
         {/* <Input
           size="large"
