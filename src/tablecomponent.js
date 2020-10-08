@@ -16,7 +16,7 @@ class Tablecomponent extends React.Component {
     compare(a, b) {
         const bandA = a.name.toUpperCase();
         const bandB = b.name.toUpperCase();
-      
+     
         let comparison = 0;
         if (bandA > bandB) {
           comparison = 1;
@@ -59,8 +59,13 @@ class Tablecomponent extends React.Component {
 
     // }
 
-    handleSetSearchInput = searchInput => {
-        this.setState({ filterText:searchInput });
+    handleSetSearchInput = (searchInput,x) => {
+        if(x){
+            this.setState({ filterText:searchInput });
+            this.getItems();
+        }else{
+            this.setState({ filterText:searchInput });
+        }
       };
 
 
@@ -68,23 +73,23 @@ class Tablecomponent extends React.Component {
         const v = this.state.filterText;
         if (v) {
            
-          
+         
                 this.setState({
                     searchClick:true,
                  
                   });
-              
+             
            
         } else {
             this.setState({
                 searchClick:false
             })
-            
+           
         }
         this.pagebutton('e',1);
     }
     pagebutton(e,u){
-        
+       
         const c = this.state.filterText?this.state.filterRecords.slice(0,this.state.filterRecords.length):this.state.items.slice(0,this.state.items.length);
         if(u === 1){
             if(c.length > 10){
@@ -100,14 +105,14 @@ class Tablecomponent extends React.Component {
                   });
               }.bind(this), 1200)
             }
-            
+           
         }else{
             const x = c.splice((u -1)*10,10);
         this.setState({
             filtervalue: x
         });
         }
-        
+       
     }
 
     handleSetFilteredData = filteredData => {
@@ -117,7 +122,7 @@ class Tablecomponent extends React.Component {
 
     render() {
         const { error, isLoaded, items, filtervalue, filterText } = this.state;
-        
+       
         const mystyle = {
             border: '1px solid',
             fontFamily: "Arial"
@@ -126,13 +131,13 @@ class Tablecomponent extends React.Component {
             padding:'15px 30px 15px 30px',
             marginTop:'20px'
         }
-        
+       
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
-            const gx = []; 
+            const gx = [];
             if(this.state.searchClick){
                 const g = Math.ceil(this.state.filterRecords.length/10);
                 gx.length = 0;
@@ -146,7 +151,7 @@ class Tablecomponent extends React.Component {
                     gx.push(<button style={mybuttonstyle} key={i} onClick = {e => this.pagebutton(e,i)}>{i}</button>)
                 }
             }
-            
+           
            
             return (
                 <div>
@@ -155,10 +160,10 @@ class Tablecomponent extends React.Component {
           data={this.state.filtervalue}
           handleSetSearchInput= {this.handleSetSearchInput}
           handleSetFilteredData={this.handleSetFilteredData}
-          
+         
         />
                         {/* <input type="text" placeholder='Search by name or city or genre' style={{ padding: '10px', margin: '10px',width:'300px' }} onChange={e => this.filterItems(e.target.value)}></input> */}
-                        <button type='submit' onClick = {e => this.getItems(e)} style={{ padding: '10px'}}>Search</button>
+                        <button type='submit' onClick = {e => this.getItems(e)} onKeyPress = {e => this.getItems(e)} style={{ padding: '10px'}}>Search</button>
                     </div>
                     <table style={{width:'100%'}}>
                         <tr style={mystyle}>
@@ -169,6 +174,7 @@ class Tablecomponent extends React.Component {
                             <th style={mystyle}>Genres</th>
                         </tr>
                         {
+                            (filtervalue.length)?
                                 filtervalue.map((item, index) => {
                                     return (
                                         <tr key={index}>
@@ -180,9 +186,11 @@ class Tablecomponent extends React.Component {
                                         </tr>
                                     );
                                 })
-                            
+                                :
+                                <p>No restaurants were found</p>
+                           
                             }
-                        
+                       
 
                     </table>
                     <div>{gx}</div>
@@ -192,4 +200,3 @@ class Tablecomponent extends React.Component {
         }
     }
 }
-export default Tablecomponent;
